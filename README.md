@@ -1,127 +1,114 @@
 # 🌍 Cross-Lingual RAG for Low-Resource Languages
 
-A practical exploration of multilingual retrieval-augmented search across Irish, French, and Spanish documents. This project allows users to search in any language and retrieve the most semantically relevant documents, displayed with a similarity score. It does not generate answers or translate content.
-
-## Table of Contents
-- [Project Overview](#project-overview)
-- [Current Functionality](#current-functionality)
-- [Quick Start](#quick-start)
-- [How It Works](#how-it-works)
-- [Project Structure](#project-structure)
-- [Customisation](#customisation)
-- [Contributing](#contributing)
-- [License](#licence)
-- [Acknowledgements](#acknowledgements)
-
-## Project Overview
-
-This project demonstrates a multilingual retrieval system (SimpleRAG) that searches across Irish, French, and Spanish documents. Users can enter queries in any language and retrieve documents ranked by relevance.
-
-**Key Notes:**
-- The system retrieves documents, not answers
-- Similarity scores show how closely each document matches the query
-- Queries in English do not automatically produce English summaries
-
-## Current Functionality
-
-- 🔍 Search across Irish, French, and Spanish documents
-- 📊 Return the top-k most relevant documents with cosine similarity scores
-- 🎨 Colour-coded relevance indicator for quick reference:
-  - **Green**: Highly relevant (>0.7)
-  - **Orange**: Moderately relevant (0.4-0.7)
-  - **Red**: Low relevance (<0.4)
-- 📄 No answer generation or translation—raw document content is displayed
+A simple multilingual search system that finds relevant documents in Irish, French, and Spanish. Users can search in any language and get matching documents with similarity scores - no answer generation or translation involved.
 
 ## Quick Start
 
-### Installation & Python Fix
+### Installation
 
-⚠️ **Important**: This app requires Python 3.11 or 3.10 due to compatibility issues with PyTorch and SentenceTransformers. Python 3.13 is not supported and will cause errors.
+**Python 3.10 or 3.11 required** (Python 3.13 not supported)
 
-**Steps (recommended):**
-
-1. Create a new environment:
 ```bash
+# Create environment
 conda create -n rag_env python=3.11 -y
 conda activate rag_env
 
-Run Interactive App
-Open the app in your browser (default: http://localhost:8501)
+# Install dependencies
+pip install streamlit sentence-transformers torch scikit-learn numpy
 
-Enter a query in any language, for example:
+# Run the app
+streamlit run app.py
+Then open http://localhost:8501 in your browser.
 
-Tell me about traditional music
+Example Queries
+"Tell me about traditional music"
 
-Famous artists in Spain
+"Famous artists in Spain"
 
-Irish mythology
-
-View top-k retrieved documents with relevance scores
+"Irish mythology"
 
 How It Works
-Document Collection: Documents in Irish, French, and Spanish are stored in a Python dictionary
+Documents in Irish, French and Spanish are stored in a dictionary
 
-Embeddings: Uses paraphrase-multilingual-MiniLM-L12-v2 from sentence-transformers to convert documents and queries into dense vectors
+Embeddings created using paraphrase-multilingual-MiniLM-L12-v2
 
-Search Process:
+Search calculates cosine similarity between query and documents
 
-Query is embedded
-
-Cosine similarity is calculated against all document embeddings
-
-Top-k matches are returned with similarity scores
-
-Display: Results shown in Streamlit with coloured relevance scores
-
-No translation or summarisation is performed
+Results show top matches with colour-coded relevance scores
 
 Project Structure
 text
-cross-lingual-rag/
-├── app.py                     # Streamlit interface
-├── README.md                  # This file
-├── requirements.txt           # Python dependencies
-├── data/                      # Document storage (optional expansion)
-│   ├── irish/
-│   ├── french/
-│   └── spanish/
-└── results/                   # Optional: cached embeddings (if you add caching)
+├── app.py              # Main Streamlit app
+├── README.md           # This file
+└── requirements.txt    # Dependencies
 Customisation
-Change Embedding Model:
-Replace SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2') with another multilingual model.
+Change model: Swap paraphrase-multilingual-MiniLM-L12-v2 for other multilingual models
 
-Examples:
+Adjust results: Modify top_k parameter in search function
 
-SentenceTransformer("paraphrase-multilingual-mpnet-base-v2") - Larger, more accurate
-
-SentenceTransformer("distiluse-base-multilingual-cased-v2") - Faster
-
-Adjust top-k results:
-Modify the top_k parameter in the search() function.
-
-Ideas for improvement:
-
-Implement result summarisation or translation
-
-Introduce FAISS indexing for scalability
-
-Add query reranking using cross-encoders
-
-Contributing
-Contributions are welcome! Please feel free to submit pull requests or open issues for suggestions and improvements.
+Future ideas: Add FAISS, summarisation, or translation
 
 Licence
-MIT Licence – free to use for research and education.
+MIT Licence
 
-Acknowledgements
-sentence-transformers: Multilingual embedding models
+text
 
-Streamlit: Interactive web interface
+I've made it:
+- **Shorter and more concise** - removed repetitive sections
+- **Student-appropriate** - simpler language, less formal
+- **British English** - "colour", "customisation", "licence"
+- **Fixed formatting** - proper code block structure
+- **Upload-ready** - clean markdown that will render correctly on GitHub
 
-PyTorch: Deep learning backend
-2. Install dependencies:
+The tone is now more believable for a student project while keeping all essential information.
+I want it to be a file
+markdown
+# 🌍 Cross-Lingual RAG for Low-Resource Languages
+
+A simple multilingual search system that finds relevant documents in Irish, French, and Spanish. Search in any language and get matching documents with similarity scores.
+
+## Quick Start
+
+**Requires Python 3.10 or 3.11**
+
+```bash
+# Create environment
+conda create -n rag_env python=3.11 -y
+conda activate rag_env
+
+# Install dependencies
 pip install streamlit sentence-transformers torch scikit-learn numpy
 
-3. Run the app:
-python -m streamlit run app.py
+# Run app
+streamlit run app.py
+Open http://localhost:8501 and try queries like:
 
+"Traditional music"
+
+"Spanish artists"
+
+"Irish myths"
+
+How It Works
+Documents in 3 languages stored locally
+
+paraphrase-multilingual-MiniLM-L12-v2 creates embeddings
+
+Cosine similarity finds best matches
+
+Results show with colour-coded scores
+
+Project Structure
+text
+├── app.py
+├── README.md
+└── requirements.txt
+Future Improvements
+Add FAISS for faster search
+
+Include more languages
+
+Add result summarisation
+
+Licence
+MIT Licence
