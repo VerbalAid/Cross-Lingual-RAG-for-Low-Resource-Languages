@@ -1,311 +1,147 @@
-# Cross-Lingual RAG for Low-Resource Languages
+# 🌍 Cross-Lingual RAG for Low-Resource Languages (Current Version)
 
-A practical exploration of multilingual retrieval-augmented generation (RAG) systems, comparing performance across high-resource and low-resource languages.
+A practical exploration of multilingual retrieval-augmented search across Irish, French, and Spanish documents. This project allows users to search in any language and retrieve the most semantically relevant documents, displayed with a similarity score. **It does not generate answers or translate content.**
 
 ---
 
 ## Table of Contents
 
-- [Project Overview](#project-overview)
-- [Results Summary](#results-summary)
-- [Architecture](#architecture)
-- [Project Structure](#project-structure)
-- [Quick Start](#quick-start)
-  - [Installation](#installation)
-  - [Build Database](#build-database)
-  - [Run Interactive App](#run-interactive-app)
-  - [Run Evaluation](#run-evaluation)
-- [How It Works](#how-it-works)
-  - [Document Processing](#document-processing)
-  - [Retrieval Process](#retrieval-process)
-  - [Evaluation Methodology](#evaluation-methodology)
-- [Key Findings](#key-findings)
-  - [Why the Performance Gap](#why-the-performance-gap)
-  - [Implications](#implications)
-- [Customization](#customization)
-  - [Adding New Languages](#adding-new-languages)
-  - [Using Your Own Documents](#using-your-own-documents)
-  - [Changing Embedding Model](#changing-embedding-model)
-- [Technical Notes](#technical-notes)
-  - [Chunking Strategy](#chunking-strategy)
-  - [FAISS Index Type](#faiss-index-type)
-  - [Embedding Normalization](#embedding-normalization)
-- [Contributing](#contributing)
-- [License](#license)
+- [Project Overview](#project-overview)  
+- [Current Functionality](#current-functionality)  
+- [Quick Start](#quick-start)  
+- [Installation & Python Fix](#installation--python-fix)  
+- [Run Interactive App](#run-interactive-app)  
+- [How It Works](#how-it-works)  
+- [Project Structure](#project-structure)  
+- [Customization](#customization)  
+- [Contributing](#contributing)  
+- [License](#license)  
 - [Acknowledgments](#acknowledgments)
-- [Contact](#contact)
 
 ---
 
 ## Project Overview
 
-This project tests the limits of cross-lingual RAG by querying in English and retrieving from documents in five languages:
+This project demonstrates a **multilingual retrieval system** (SimpleRAG) that searches across Irish, French, and Spanish documents. Users can enter queries in any language and retrieve documents ranked by relevance.  
 
-**High-resource languages:**
-- English
-- French
-- Spanish
-- Portuguese
+**Key Notes:**
 
-**Low-resource languages:**
-- Irish
-
-**Key Question:** Can a multilingual embedding model bridge the gap between high-resource and low-resource languages in retrieval tasks?
+- The system **retrieves documents**, not answers.  
+- Similarity scores show how closely each document matches the query.  
+- Queries in English do **not** automatically produce English summaries.
 
 ---
 
-## Results Summary
+## Current Functionality
 
-Expected findings:
+- Search across Irish, French, and Spanish documents.  
+- Return the **top-k most relevant documents** with cosine similarity scores.  
+- Color-coded relevance indicator for quick reference:
 
-- **High-resource languages:** 85-95% retrieval accuracy
-- **Low-resource languages:** 60-75% retrieval accuracy
-- **Performance gap:** ~20 percentage points
+  - Green: Highly relevant  
+  - Orange: Moderately relevant  
+  - Red: Low relevance  
 
-This demonstrates the "resource curse" in NLP - low-resource languages consistently underperform due to limited training data.
-
----
-
-## Architecture
-
-```
-User Query (English) 
-    ↓
-Multilingual Embedding Model
-    ↓
-Vector Search (FAISS)
-    ↓
-Retrieve from 5 Language Databases
-    ↓
-Display Results with Similarity Scores
-```
-
-**Tech Stack:**
-
-- **Embeddings:** `paraphrase-multilingual-MiniLM-L12-v2` (sentence-transformers)
-- **Vector Database:** FAISS (Facebook AI Similarity Search)
-- **Interface:** Streamlit
-- **Evaluation:** Custom metrics + visualization
-
----
-
-## Project Structure
-
-```
-cross-lingual-rag/
-├── data/                          # Source documents
-│   ├── english/
-│   │   ├── rlhf_notes.txt
-│   │   ├── instruction_tuning_notes.txt
-│   │   └── rag_notes.txt
-│   ├── french/                    # Translated versions
-│   ├── spanish/
-│   ├── portuguese/
-│   └── irish/
-├── results/                       # Generated files (not in git)
-│   ├── index_*.faiss             # Vector indices per language
-│   ├── chunk_stores.pkl          # Document metadata
-│   ├── accuracy_plot.png         # Performance visualization
-│   └── *.csv                     # Evaluation results
-├── build_database.py             # Create vector database
-├── app.py                        # Streamlit interface
-├── evaluate.py                   # Run evaluation suite
-├── requirements.txt              # Python dependencies
-└── README.md
-```
+- **No answer generation or translation**—raw document content is displayed.
 
 ---
 
 ## Quick Start
 
-### Installation
+### Installation & Python Fix
+
+> ⚠️ **Important:** This app requires Python **3.11** or **3.10** due to compatibility issues with PyTorch and SentenceTransformers. Python 3.13 is not supported and will cause errors.
+
+**Steps (recommended):**
+
+1. Create a new environment:
 
 ```bash
-# Clone repository
-git clone https://github.com/yourusername/cross-lingual-rag.git
-cd cross-lingual-rag
+conda create -n rag_env python=3.11 -y
+conda activate rag_env
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+2. Install dependencies:
+pip install streamlit sentence-transformers torch scikit-learn numpy
 
-# Install dependencies
-pip install -r requirements.txt
-```
+3. Run the app:
+python -m streamlit run "C:\Users\HP User\OneDrive\Desktop\python_app\app.py"
 
-### Build Database
 
-```bash
-python build_database.py
-```
+**Run Interactive App**
 
-This will:
-- Load documents from `data/` folders
-- Chunk text into overlapping segments
-- Generate embeddings using multilingual model
-- Create FAISS indices for each language
-- Save to `results/` directory
+Open the app in your browser (default: http://localhost:8501
+).
 
-### Run Interactive App
+Enter a query in any language, e.g.:
 
-```bash
-streamlit run app.py
-```
+Tell me about traditional music
+Famous artists in Spain
+Irish mythology
 
-Open your browser to `http://localhost:8501` and try queries like:
-- "What is RLHF?"
-- "How does instruction tuning work?"
-- "Explain retrieval augmented generation"
 
-### Run Evaluation
+View top-k retrieved documents with relevance scores.
 
-```bash
-python evaluate.py
-```
+**How It Works**
 
-Generates:
-- Retrieval accuracy per language
-- High vs low-resource comparison
-- Performance visualization (`accuracy_plot.png`)
-- Detailed results (`detailed_results.csv`)
+Document Collection:
+Documents in Irish, French, and Spanish are stored in a Python dictionary.
 
----
+Embeddings:
+Uses paraphrase-multilingual-MiniLM-L12-v2 from sentence-transformers to convert documents and queries into dense vectors.
 
-## How It Works
+Search Process:
 
-### Document Processing
+Query is embedded.
 
-1. Documents are split into ~300-word chunks with 50-word overlap
-2. Each chunk is embedded into a 384-dimensional vector
-3. Vectors are normalized and stored in FAISS indices
+Cosine similarity is calculated against all document embeddings.
 
-### Retrieval Process
+Top-k matches are returned with similarity scores.
 
-1. User query (English) is embedded using same model
-2. Cosine similarity search finds top-k most similar chunks per language
-3. Results are ranked by similarity score
-4. Sources are displayed with metadata
+Display:
 
-### Evaluation Methodology
+Results shown in Streamlit with colored relevance scores.
 
-- 10 test queries covering 3 topics (RLHF, Instruction Tuning, RAG)
-- Success = correct topic retrieved in top-3 results
-- Metrics: Accuracy, average similarity score, retrieval rank
+**No translation or summarization is performed.**
 
----
+Project Structure
+cross-lingual-rag/
+├── app.py                     # Streamlit interface
+├── README.md                  # This file
+├── requirements.txt           # Python dependencies
+├── data/                      # Document storage (optional expansion)
+│   ├── irish/
+│   ├── french/
+│   └── spanish/
+└── results/                   # Optional: cached embeddings (if you add caching)
 
-## Key Findings
+Customisation
 
-### Why the Performance Gap
+Change Embedding Model:
+Replace SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2') with another multilingual model.
+Examples:
+SentenceTransformer("paraphrase-multilingual-mpnet-base-v2")  # Larger, more accurate
+SentenceTransformer("distiluse-base-multilingual-cased-v2")  # Faster
 
-**High-Resource Languages (French, Spanish, Portuguese):**
 
-- ✓ Abundant training data in embedding model
-- ✓ Rich linguistic resources
-- ✓ Similar structure to English (Romance languages)
+Adjust top-k results:
+Modify the top_k parameter in the search() function.
 
-**Low-Resource Languages (Irish):**
+**Ideas for improvement:**
 
-- ✗ Limited training data
-- ✗ Fewer digital resources
-- ✗ Different linguistic structure (Celtic)
+Implement result summarization or translation.
 
-### Implications
+Introduce FAISS indexing for scalability.
 
-Multilingual models show bias toward high-resource languages. Low-resource languages need specialized approaches:
+Add query reranking using cross-encoders.
 
-- Language-specific fine-tuning
-- Synthetic data generation
-- Transfer learning from related languages
-- Hybrid systems combining translation + retrieval
+**License**
 
----
+MIT License – free to use for research and education.
 
-## Customization
+**Acknowledgments**
 
-### Adding New Languages
+sentence-transformers: Multilingual embedding models.
 
-1. Create folder in `data/your_language/`
-2. Add translated `.txt` files
-3. Run `python build_database.py`
+Streamlit: Interactive web interface.
 
-### Using Your Own Documents
-
-1. Replace files in `data/english/` with your content
-2. Translate to target languages
-3. Rebuild database
-
-### Changing Embedding Model
-
-Edit `build_database.py` and `app.py`:
-
-```python
-# Try different models from sentence-transformers
-model = SentenceTransformer("model-name-here")
-```
-
-**Options:**
-- `paraphrase-multilingual-mpnet-base-v2` (larger, better quality)
-- `distiluse-base-multilingual-cased-v2` (faster)
-- `LaBSE` (Language-agnostic BERT sentence embeddings)
-
----
-
-## Technical Notes
-
-### Chunking Strategy
-
-- **Size:** 300 words (~500 tokens)
-- **Overlap:** 50 words (prevents boundary issues)
-- **Why:** Balance between context and granularity
-
-### FAISS Index Type
-
-- **IndexFlatIP:** Inner product (cosine similarity after normalization)
-- **Why:** Accurate, works well for small-to-medium datasets (<1M vectors)
-- **Alternative:** Use `IndexIVFFlat` for larger datasets
-
-### Embedding Normalization
-
-```python
-faiss.normalize_L2(embeddings)
-```
-
-Ensures cosine similarity = inner product, making scores comparable across languages.
-
----
-
-## Contributing
-
-Ideas for improvements:
-
-- [ ] Add more languages (Arabic, Hindi, Swahili, etc.)
-- [ ] Implement hybrid search (dense + sparse/BM25)
-- [ ] Add reranking with cross-encoder
-- [ ] Compare multiple embedding models
-- [ ] Implement query translation as baseline
-- [ ] Add support for multi-hop retrieval
-
----
-
-## License
-
-MIT License - feel free to use for research and education.
-
----
-
-## Acknowledgments
-
-- **sentence-transformers:** For multilingual embedding models
-- **FAISS:** For efficient similarity search
-- **Streamlit:** For rapid prototyping
-
----
-
-## Contact
-
-Questions or suggestions? Open an issue or reach out!
-
----
-
-**Built with:** Python 3.8+ • sentence-transformers • FAISS • Streamlit
+PyTorch: Deep learning backend.
