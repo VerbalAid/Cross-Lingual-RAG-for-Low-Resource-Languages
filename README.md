@@ -67,7 +67,7 @@ pip install streamlit sentence-transformers torch scikit-learn numpy
 python -m streamlit run "C:\Users\HP User\OneDrive\Desktop\python_app\app.py"
 
 
-##**Run Interactive App**
+## Run Interactive App
 
 Open the app in your browser (default: http://localhost:8501
 ).
@@ -81,7 +81,7 @@ Irish mythology
 
 View top-k retrieved documents with relevance scores.
 
-##**How It Works**
+##  How It Works
 
 Document Collection:
 Documents in Irish, French, and Spanish are stored in a Python dictionary.
@@ -101,9 +101,9 @@ Display:
 
 Results shown in Streamlit with colored relevance scores.
 
-##**No translation or summarization is performed.**
+## No translation or summarization is performed.
 
-##Project Structure
+## Project Structure
 cross-lingual-rag/
 ├── app.py                     # Streamlit interface
 ├── README.md                  # This file
@@ -116,7 +116,7 @@ cross-lingual-rag/
 
 
 
-##Change Embedding Model:
+## Change Embedding Model:
 Replace SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2') with another multilingual model.
 Examples:
 SentenceTransformer("paraphrase-multilingual-mpnet-base-v2")  # Larger, more accurate
@@ -134,11 +134,11 @@ Introduce FAISS indexing for scalability.
 
 Add query reranking using cross-encoders.
 
-##License
+## License
 
 MIT License – free to use for research and education.
 
-##Acknowledgments
+## Acknowledgments
 
 sentence-transformers: Multilingual embedding models.
 
