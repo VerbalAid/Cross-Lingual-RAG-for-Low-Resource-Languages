@@ -45,6 +45,80 @@ This project demonstrates a multilingual retrieval system (SimpleRAG) that searc
 conda create -n rag_env python=3.11 -y
 conda activate rag_env
 
+Run Interactive App
+Open the app in your browser (default: http://localhost:8501)
+
+Enter a query in any language, for example:
+
+Tell me about traditional music
+
+Famous artists in Spain
+
+Irish mythology
+
+View top-k retrieved documents with relevance scores
+
+How It Works
+Document Collection: Documents in Irish, French, and Spanish are stored in a Python dictionary
+
+Embeddings: Uses paraphrase-multilingual-MiniLM-L12-v2 from sentence-transformers to convert documents and queries into dense vectors
+
+Search Process:
+
+Query is embedded
+
+Cosine similarity is calculated against all document embeddings
+
+Top-k matches are returned with similarity scores
+
+Display: Results shown in Streamlit with coloured relevance scores
+
+No translation or summarisation is performed
+
+Project Structure
+text
+cross-lingual-rag/
+├── app.py                     # Streamlit interface
+├── README.md                  # This file
+├── requirements.txt           # Python dependencies
+├── data/                      # Document storage (optional expansion)
+│   ├── irish/
+│   ├── french/
+│   └── spanish/
+└── results/                   # Optional: cached embeddings (if you add caching)
+Customisation
+Change Embedding Model:
+Replace SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2') with another multilingual model.
+
+Examples:
+
+SentenceTransformer("paraphrase-multilingual-mpnet-base-v2") - Larger, more accurate
+
+SentenceTransformer("distiluse-base-multilingual-cased-v2") - Faster
+
+Adjust top-k results:
+Modify the top_k parameter in the search() function.
+
+Ideas for improvement:
+
+Implement result summarisation or translation
+
+Introduce FAISS indexing for scalability
+
+Add query reranking using cross-encoders
+
+Contributing
+Contributions are welcome! Please feel free to submit pull requests or open issues for suggestions and improvements.
+
+Licence
+MIT Licence – free to use for research and education.
+
+Acknowledgements
+sentence-transformers: Multilingual embedding models
+
+Streamlit: Interactive web interface
+
+PyTorch: Deep learning backend
 2. Install dependencies:
 pip install streamlit sentence-transformers torch scikit-learn numpy
 
